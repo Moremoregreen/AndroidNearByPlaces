@@ -2,28 +2,19 @@ package com.moremoregreen.androidnearbyplaces.Model;
 
 public class Results {
     private Photos[] photos;
-
     private String id;
-
     private String place_id;
-
     private String icon;
-
     private String vicinity;
-
     private String scope;
-
     private String name;
-
     private String rating;
-
     private String[] types;
-
     private String reference;
-
     private Opening_hours opening_hours;
-
     private Geometry geometry;
+
+
 
     public Photos[] getPhotos ()
     {
@@ -144,6 +135,7 @@ public class Results {
     {
         this.geometry = geometry;
     }
+
 
     @Override
     public String toString()

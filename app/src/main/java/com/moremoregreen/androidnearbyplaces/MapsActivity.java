@@ -2,6 +2,7 @@ package com.moremoregreen.androidnearbyplaces;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -39,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -54,6 +56,8 @@ public class MapsActivity extends FragmentActivity implements
     private LocationRequest mLocationRequest;
 
     IGoogleAPIService mService;
+
+    MyPlaces currentPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +111,9 @@ public class MapsActivity extends FragmentActivity implements
                 .enqueue(new Callback<MyPlaces>() {
                     @Override
                     public void onResponse(Call<MyPlaces> call, Response<MyPlaces> response) {
+
+                        currentPlace = response.body(); // 記得要給currentPlace一個值
+
                         if(response.isSuccessful())
                         {
                             for(int i = 0; i<response.body().getResults().length; i++)
@@ -130,7 +137,7 @@ public class MapsActivity extends FragmentActivity implements
                                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_school));
                                 else
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
+                                markerOptions.snippet(String.valueOf(i)); //Assign index for marker
                                 //Add to map
                                 mMap.addMarker(markerOptions);
 
@@ -216,6 +223,17 @@ public class MapsActivity extends FragmentActivity implements
                 buildGoogleAPIClient();
                 mMap.setMyLocationEnabled(true);
             }
+            //Make event click on Marker
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //當User選了一個marker,get Result of Place and assign to static variable
+                com.moremoregreen.androidnearbyplaces.Common.currentResults = currentPlace.getResults()[Integer.parseInt(marker.getSnippet())];
+                //start new activity
+                startActivity(new Intent(MapsActivity.this,ViewPlace.class));
+                return true;
+            }
+        });
         }
 
     private synchronized void buildGoogleAPIClient() {

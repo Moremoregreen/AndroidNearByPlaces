@@ -2,8 +2,8 @@ package com.moremoregreen.androidnearbyplaces.Model;
 
 public class Opening_hours {
     private String open_now;
-
     private String[] weekday_text;
+    private Periods[] periods;
 
     public String getOpen_now ()
     {
@@ -30,4 +30,14 @@ public class Opening_hours {
     {
         return "ClassPojo [open_now = "+open_now+", weekday_text = "+weekday_text+"]";
     }
+    public Periods[] getPeriods ()
+    {
+        return periods;
+    }
+
+    public void setPeriods (Periods[] periods)
+    {
+        this.periods = periods;
+    }
+
 }
