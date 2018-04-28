@@ -25,7 +25,7 @@ public class ViewPlace extends AppCompatActivity {
     ImageView photo;
     RatingBar ratingBar;
     TextView opening_hour, place_address, place_name;
-    Button btnViewOnMap;
+    Button btnViewOnMap, btnViewDirections;
 
     IGoogleAPIService mService;
 
@@ -44,7 +44,7 @@ public class ViewPlace extends AppCompatActivity {
         place_name = findViewById(R.id.place_name);
         opening_hour = findViewById(R.id.place_open_hour);
         btnViewOnMap = findViewById(R.id.btn_show_map);
-
+        btnViewDirections = findViewById(R.id.btn_view_directions);
         //Empty all view
         place_name.setText("");
         place_address.setText("");
@@ -57,6 +57,15 @@ public class ViewPlace extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });
+
+        btnViewDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(ViewPlace.this, ViewDirections.class);
+                startActivity(mapIntent);
+            }
+        });
+
 
         //Photo
         if(Common.currentResults.getPhotos() != null && Common.currentResults.getPhotos().length > 0)

@@ -41,11 +41,11 @@
 
         <TextView
             android:id="@+id/place_open_hour"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="開門時間："
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="開門了嗎："
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <RatingBar
             android:id="@+id/ratingBar"
             android:max="5"
@@ -57,6 +57,16 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_view_directions"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="28dp"
+            android:text="看導航路線" />
 
     </LinearLayout>
 

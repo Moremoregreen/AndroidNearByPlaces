@@ -39,7 +39,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewPlace"></activity>
+        <activity android:name=".ViewPlace" />
+        <activity
+            android:name=".ViewDirections"
+            android:label="@string/title_activity_view_directions"></activity>
     </application>
 
 </manifest>
