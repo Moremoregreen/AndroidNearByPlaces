@@ -2,6 +2,7 @@ package com.moremoregreen.androidnearbyplaces;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -10,6 +11,9 @@ import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -30,11 +34,17 @@ import com.google.android.gms.maps.model.Polyline;
 
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.moremoregreen.androidnearbyplaces.Helper.DirectionJSONParser;
+import com.moremoregreen.androidnearbyplaces.Model.MyRoutes;
+import com.moremoregreen.androidnearbyplaces.Model.Step;
 import com.moremoregreen.androidnearbyplaces.Remote.IGoogleAPIService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +68,8 @@ public class ViewDirections extends FragmentActivity implements OnMapReadyCallba
     Polyline polyline;
 
     IGoogleAPIService mService;
+    Button btn_text_directions;
+    MyRoutes myRoutes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +81,32 @@ public class ViewDirections extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         mService = Common.getGoogleAPIServiceScalars();
+        btn_text_directions = findViewById(R.id.btn_text_directions);
+        btn_text_directions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ViewDirections.this);
+                LayoutInflater inflater = LayoutInflater.from(ViewDirections.this);
+
+                View step_view = inflater.inflate(R.layout.step_layout, null);
+                HtmlTextView txt_routes = step_view.findViewById(R.id.txt_routes);
+
+                if(myRoutes != null){
+                    for(Step step:myRoutes.routes.get(0).legs.get(0).steps){
+                        StringBuilder stringBuilder = new StringBuilder();
+                        txt_routes.setHtml(stringBuilder.toString(), new HtmlHttpImageGetter(txt_routes));
+                    }
+                }
+                builder.setView(step_view);
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         buildLocationRequest();
         buildLocationCallBack();
@@ -182,7 +220,15 @@ public class ViewDirections extends FragmentActivity implements OnMapReadyCallba
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
+                        myRoutes = new Gson().fromJson(response.body().toString(),
+                                new TypeToken<MyRoutes>(){}.getType());
                         new ParserTask().execute(response.body().toString());
+
+                        //不要忘記 enable btn_text_directions after fetch data
+                        if(myRoutes != null){
+                            btn_text_directions.setEnabled(true);
+                        }
+
                     }
 
                     @Override
